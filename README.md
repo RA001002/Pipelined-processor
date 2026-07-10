@@ -108,6 +108,3 @@ for a portfolio-sized project and are called out explicitly in
 the branch-resolution critical path this design already has, not a hidden
 gap.
 
-## License
-
-MIT — see [`LICENSE`](LICENSE).
