@@ -1,0 +1,39 @@
+//=============================================================
+// if_id_reg.v
+// IF/ID pipeline register.
+//   stall -> hold current contents (used for load-use hazard)
+//   flush -> insert a NOP (used on taken branch/jump)
+//=============================================================
+module if_id_reg (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire        stall,
+    input  wire        flush,
+
+    input  wire [31:0] pc_in,
+    input  wire [31:0] pc_plus4_in,
+    input  wire [31:0] instr_in,
+
+    output reg  [31:0] pc_out,
+    output reg  [31:0] pc_plus4_out,
+    output reg  [31:0] instr_out
+);
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            pc_out       <= 32'h0;
+            pc_plus4_out <= 32'h0;
+            instr_out    <= 32'h0000_0013; // NOP
+        end else if (flush) begin
+            pc_out       <= 32'h0;
+            pc_plus4_out <= 32'h0;
+            instr_out    <= 32'h0000_0013; // NOP
+        end else if (!stall) begin
+            pc_out       <= pc_in;
+            pc_plus4_out <= pc_plus4_in;
+            instr_out    <= instr_in;
+        end
+        // else: hold (stall)
+    end
+
+endmodule
